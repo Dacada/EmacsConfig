@@ -44,4 +44,4 @@
 (define-key prog-mode-map (kbd "C-c C-h") #'eldoc)
 
 ;; browse url at point
-(global-set-key (kbd "C-c C-u") #'browse-url-at-point)
+(global-set-key (kbd "C-c u") #'browse-url-at-point)
