@@ -15,7 +15,7 @@
 	  (lambda ()
 	    (ansi-color-apply-on-region compilation-filter-start (point))))
 
-;; start eglot with certain modes
+;; start eglot with python mode
 (add-hook 'python-mode-hook #'eglot-ensure)
 
 ;; make python mode separate comments from code according to pep8
