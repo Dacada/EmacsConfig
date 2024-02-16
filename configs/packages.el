@@ -76,3 +76,12 @@
              :repo "jdtsmith/eglot-booster")
   :after eglot
   :config (eglot-booster-mode))
+
+(use-package rust-mode
+  :after eglot
+  :hook (rust-mode . eglot-ensure))
+
+(use-package cargo-mode
+  :after rust-mode
+  :hook (rust-mode . cargo-minor-mode)
+  :config (setq compilation-scroll-output t))
