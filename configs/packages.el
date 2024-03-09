@@ -85,3 +85,7 @@
   :after rust-mode
   :hook (rust-mode . cargo-minor-mode)
   :config (setq compilation-scroll-output t))
+
+(use-package go-mode
+  :after eglot
+  :hook (go-mode . eglot-ensure))
