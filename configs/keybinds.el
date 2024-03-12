@@ -46,9 +46,13 @@
 ;; browse url at point
 (global-set-key (kbd "C-c u") #'browse-url-at-point)
 
-;; create a new line on the previous line from point
+;; create a new line on the current/previous line from point
 (global-set-key (kbd "C-o") (lambda ()
                               (interactive)
-                              (previous-line)
                               (move-end-of-line nil)
                               (newline)))
+(global-set-key (kbd "C-S-o") (lambda ()
+                                (interactive)
+                                (previous-line)
+                                (move-end-of-line nil)
+                                (newline)))
