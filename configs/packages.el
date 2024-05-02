@@ -89,3 +89,5 @@
 (use-package go-mode
   :after eglot
   :hook (go-mode . eglot-ensure))
+
+(use-package smithy-mode)
