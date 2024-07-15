@@ -5,6 +5,9 @@
 ;; External dependencies:
 ;;   - Cascadia Code font must be installed: https://github.com/microsoft/cascadia-code/releases
 
+;; The fonts for all-the-icons must be installed once by running, within Emacs:
+;;     M-x all-the-icons-install-fonts
+
 ;; bootstrap straight.el
 (defvar bootstrap-version)
 (let ((bootstrap-file
@@ -181,6 +184,25 @@
   :config
   (pixel-scroll-mode))
 
+;; icons!
+(use-package all-the-icons :ensure t :defer t)
+
+;; icons in dired!
+(use-package all-the-icons-dired
+  :ensure t
+  :hook
+  (dired-mode . all-the-icons-dired-mode))
+
+;; icons in ivy!
+(use-package all-the-icons-ivy
+  :defer t
+  :ensure t
+  :after ivy
+  :custom
+  (all-the-icons-ivy-buffer-commands '() "Don't use for buffers.")
+  :config
+  (all-the-icons-ivy-setup))
+
 ;; cool mode line inspired by doom emacs
 (use-package mood-line
   :ensure t
@@ -211,3 +233,139 @@
 ;; For files with very long lines
 (use-package so-long
   :config (global-so-long-mode))
+
+;; counsel-M-x can use this one -- it's an alternative to the usual M-x interface
+(use-package amx :ensure t :defer t)
+
+;; ivy-mode ensures that any Emacs command using completing-read-function uses ivy for completion.
+(use-package ivy
+  :ensure t
+  :custom
+  (ivy-count-format "%d/%d " "Show anzu-like counter")
+  (ivy-use-selectable-prompt t "Make the prompt line selectable")
+  :custom-face
+  (ivy-current-match ((t (:inherit 'hl-line))))
+  :config
+  (ivy-mode t))
+
+(use-package ivy-xref
+  :ensure t
+  :defer t
+  :custom
+  (xref-show-xrefs-function #'ivy-xref-show-xrefs "Use Ivy to show xrefs"))
+
+;; Keeping this mapping from the source, not sure what this prefix map is
+(use-package counsel
+  :ensure t
+  :bind
+  (([remap menu-bar-open] . counsel-tmm)
+   ([remap insert-char] . counsel-unicode-char)
+   ([remap isearch-forward] . counsel-grep-or-swiper)
+   :map mode-specific-map
+   :prefix-map counsel-prefix-map
+   :prefix "c"
+   ("a" . counsel-apropos)
+   ("b" . counsel-bookmark)
+   ("B" . counsel-bookmarked-directory)
+   ("c w" . counsel-colors-web)
+   ("c e" . counsel-colors-emacs)
+   ("d" . counsel-dired-jump)
+   ("f" . counsel-file-jump)
+   ("F" . counsel-faces)
+   ("g" . counsel-org-goto)
+   ("h" . counsel-command-history)
+   ("H" . counsel-minibuffer-history)
+   ("i" . counsel-imenu)
+   ("j" . counsel-find-symbol)
+   ("l" . counsel-locate)
+   ("L" . counsel-find-library)
+   ("m" . counsel-mark-ring)
+   ("o" . counsel-outline)
+   ("O" . counsel-find-file-extern)
+   ("p" . counsel-package)
+   ("r" . counsel-recentf)
+   ("s g" . counsel-grep)
+   ("s r" . counsel-rg)
+   ("s s" . counsel-ag)
+   ("t" . counsel-org-tag)
+   ("v" . counsel-set-variable)
+   ("w" . counsel-wmctrl)
+   :map help-map
+   ("F" . counsel-describe-face))
+  :custom
+  (counsel-grep-base-command
+   "rg -i -M 120 --no-heading --line-number --color never %s %s")
+  :init
+  (counsel-mode))
+
+;; Replacement for C-s using ivy/counsel
+(use-package swiper :ensure t)
+
+;; ivy completions have descriptions and stuff
+(use-package ivy-rich
+  :ensure t
+  :config
+  (ivy-rich-project-root-cache-mode t)
+  (ivy-rich-mode 1))
+
+;; indicate minibuffer depth
+(use-package mb-depth
+  :config
+  (minibuffer-depth-indicate-mode 1))
+
+;; allows expanding the region with a keyboard shortcut
+(use-package expand-region
+  :ensure t
+  :bind
+  (("C-=" . er/expand-region)
+   ("C-+" . er/contract-region)))
+
+;; create a the second of the pair automatically when creating the first, eg '(' becomes '()'
+(use-package elec-pair
+  :config
+  (electric-pair-mode))
+
+;; deleting a whitespace character deletes all of them
+(use-package hungry-delete
+  :ensure t
+  :hook
+  (text-mode . hungry-delete-mode)
+  (prog-mode . hungry-delete-mode))
+
+;; blatant copy-paste
+(use-package ibuffer-vc
+  :defer t
+  :ensure t
+  :config
+  (define-ibuffer-column icon
+    (:name "Icon" :inline t)
+    (all-the-icons-ivy--icon-for-mode major-mode))
+  :custom
+  (ibuffer-formats
+   '((mark modified read-only vc-status-mini " "
+           (name 18 18 :left :elide)
+           " "
+           (size 9 -1 :right)
+           " "
+           (mode 16 16 :left :elide)
+           " "
+           filename-and-process)) "include vc status info")
+  :hook
+  (ibuffer . (lambda ()
+               (ibuffer-vc-set-filter-groups-by-vc-root)
+               (unless (eq ibuffer-sorting-mode 'alphabetic)
+                 (ibuffer-do-sort-by-alphabetic)))))
+
+;; for git config files
+(use-package git-modes
+  :ensure t
+  :defer t)
+
+;; magit
+(use-package magit
+  :bind (("C-c g" . magit-status)))
+
+;; walk through versions of a discrete file
+(use-package git-timemachine
+  :ensure t
+  :defer t)
