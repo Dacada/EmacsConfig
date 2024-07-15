@@ -4,6 +4,7 @@
 
 ;; External dependencies:
 ;;   - Cascadia Code font must be installed: https://github.com/microsoft/cascadia-code/releases
+;;   - ag (the silver searcher) must be installed
 
 ;; The fonts for all-the-icons must be installed once by running, within Emacs:
 ;;     M-x all-the-icons-install-fonts
@@ -369,3 +370,58 @@
 (use-package git-timemachine
   :ensure t
   :defer t)
+
+;; for git merging
+(use-package smerge-mode
+  :defer t)
+
+;; highlight changes from vc in buffer and dired
+(use-package diff-hl
+  :ensure t
+  :hook
+  ((magit-post-refresh . diff-hl-magit-post-refresh)
+   (prog-mode . diff-hl-mode)
+   (org-mode . diff-hl-mode)
+   (dired-mode . diff-hl-dired-mode)))
+
+;; grep replacement
+(use-package ag
+  :ensure t
+  :defer t
+  :custom
+  (ag-highlight-search t "Highlight the current search term."))
+
+;; completion
+(use-package company
+  :ensure t
+  :hook
+  (after-init . global-company-mode))
+
+;; quickhelp if you linger in the completion
+(use-package company-quickhelp
+  :ensure t
+  :defer t
+  :custom
+  (company-quickhelp-delay 3)
+  (company-quickhelp-mode 1))
+
+;; completion for shell
+(use-package company-shell
+  :ensure t
+  :after company
+  :defer t
+  :custom-update
+  (company-backends '(company-shell)))
+
+;; show issues in the code (underlining it)
+(use-package flycheck
+  :ensure t
+  :hook
+  (prog-mode . flycheck-mode))
+
+;; coverage
+(use-package cov
+  :ensure t
+  :defer t)
+
+;;; init.el ends here
