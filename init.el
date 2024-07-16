@@ -63,7 +63,8 @@
   (tab-width 4 "And if tabs, 4 spaces wide")
   (debug-on-quit nil "Set this to t to enter the debugger on C-g")
   :custom-face
-  (default ((t (:font "Cascadia Code")))))  ;; Use Cascadia Code font by default
+  (default ((t (:font "Cascadia Code"))))  ;; Use Cascadia Code font by default
+  (fill-column 120 "line wrap after 120 columns"))  
 
 ;; Enable ligatures, snippet from https://github.com/mickeynp/ligature.el?tab=readme-ov-file#example-font-configuration-cascadia-code
 (use-package ligature
@@ -423,5 +424,38 @@
 (use-package cov
   :ensure t
   :defer t)
+
+;; kill unused buffers automatically
+(use-package midnight
+  :custom
+  (clean-buffer-list-delay-general 5 "Five days before buffers are autokilled")
+  (midnight-delay 3637 "Seconds after midnight when midnight will do its thing")
+  (midnight-mode t "Enable midnight mode"))
+
+;; move around windows with S-left/right/down/up
+(use-package windmove
+  :config
+  (windmove-default-keybindings))
+
+(use-package delsel
+  :custom
+  (delete-selection-mode 1))
+
+;; lsp servers
+(use-package eglot
+  :custom-update
+  (eglot-server-programms
+   `(typescript-ts-mode . ,(eglot-alternatives
+                            '(("mise" "exec" "--" "typescript-language-server" "--stdio"))))))
+
+;; highlight indentation
+(use-package highlight-indentation
+  :hook
+  (prog-mode . highlight-indentation-mode))
+
+;; display line numbers
+(use-package display-line-numbers
+  :hook
+  (prog-mode . display-line-numbers-mode))
 
 ;;; init.el ends here
