@@ -5,6 +5,7 @@
 ;; External dependencies:
 ;;   - Cascadia Code font must be installed: https://github.com/microsoft/cascadia-code/releases
 ;;   - ag (the silver searcher) must be installed
+;;   - mise must be installed and the typescript language server through it
 
 ;; The fonts for all-the-icons must be installed once by running, within Emacs:
 ;;     M-x all-the-icons-install-fonts
@@ -107,6 +108,8 @@
 ;; Fix the backup settings to not be infuriating
 (use-package files
   :straight nil
+  :bind
+  ("C-c r" . revert-buffer)
   :hook
   (before-save . delete-trailing-whitespace)
   :custom
@@ -150,6 +153,9 @@
   (exec-path-from-shell-initialize))
 
 ;; eshell stuff
+(use-package eshell
+  :bind
+  ("C-c e" . eshell))
 (use-package em-smart
   :straight nil
   :defer t
@@ -365,7 +371,10 @@
 
 ;; magit
 (use-package magit
-  :bind (("C-c g" . magit-status)))
+  :bind
+  (("C-c g" . magit-status)
+   (:map magit-hunk-section-map ("RET" . magit-diff-visit-file-other-window))
+   (:map magit-file-section-map ("RET" . magit-diff-visit-file-other-window))))
 
 ;; walk through versions of a discrete file
 (use-package git-timemachine
@@ -443,10 +452,16 @@
 
 ;; lsp servers
 (use-package eglot
-  :custom-update
-  (eglot-server-programms
-   `(typescript-ts-mode . ,(eglot-alternatives
-                            '(("mise" "exec" "--" "typescript-language-server" "--stdio"))))))
+  :straight nil
+  :ensure t
+  :hook
+  (prog-mode . eglot-ensure)
+  :bind (:map eglot-mode-map ("C-c C-n"))
+  :init
+  (with-eval-after-load 'eglot
+    (add-to-list 'eglot-server-programs
+                 `(typescript-ts-base-mode . ,(eglot-alternatives
+                                               '(("mise" "exec" "--" "typescript-language-server" "--stdio")))))))
 
 ;; highlight indentation
 (use-package highlight-indentation
@@ -457,5 +472,47 @@
 (use-package display-line-numbers
   :hook
   (prog-mode . display-line-numbers-mode))
+
+;; clors in compilation buffer
+(use-package fancy-compilation
+  :init
+  (with-eval-after-load 'compile
+    (fancy-compilation-mode)))
+
+(use-package newcomment
+  :straight nil
+  :hook
+  (python-base-mode . (lambda () (set (make-local-variable 'comment-inline-offset) 2))))
+
+(use-package python
+  :bind
+  ("C-c p" . run-python))
+
+(use-package browse-url
+  :bind
+  ("C-c u" . browse-url-at-point))
+
+;; Some misc useful stuff
+(use-package crux
+  :bind
+  (("C-o" . crux-smart-open-line)
+   ("C-S-o" . crux-smart-open-line-above)))
+
+(use-package zenburn-theme
+  :config
+  (load-theme 'zenburn t))
+
+(use-package treemacs
+  :custom
+  (treemacs-show-hidden-files nil)
+  :bind
+  ("C-c t" . treemacs))
+
+(use-package python-pytest
+  :bind
+  ("C-c y" . python-pytest-dispatch))
+
+;; TODO: WHEN INSTALLING THE PYTHONG DOCSTRING MODE PACKAGE, HOOK PYTHON BASE MODE TO python-docstring-mode
+
 
 ;;; init.el ends here
