@@ -6,6 +6,9 @@
 ;;   - Cascadia Code font must be installed: https://github.com/microsoft/cascadia-code/releases
 ;;   - ag (the silver searcher) must be installed
 ;;   - mise must be installed and the typescript language server through it
+;;   - an openai api key on ~/.authinfo
+;;     - format is a single line: `machine api.openai.com login apikey password [key here]`
+;;   - the emacs-lsp-booster executable from https://github.com/blahgeek/emacs-lsp-booster
 
 ;; The fonts for all-the-icons must be installed once by running, within Emacs:
 ;;     M-x all-the-icons-install-fonts
@@ -432,7 +435,9 @@
 ;; coverage
 (use-package cov
   :ensure t
-  :defer t)
+  :defer t
+  :custom
+  (cov-coverage-mode t))
 
 ;; kill unused buffers automatically
 (use-package midnight
@@ -512,7 +517,50 @@
   :bind
   ("C-c y" . python-pytest-dispatch))
 
-;; TODO: WHEN INSTALLING THE PYTHONG DOCSTRING MODE PACKAGE, HOOK PYTHON BASE MODE TO python-docstring-mode
+(use-package browse-kill-ring
+  :config
+  (browse-kill-ring-default-keybindings))
+
+(use-package python-docstring
+  :hook
+  (python-base-mode . python-docstring-mode))
+
+(use-package realgud)
+
+(use-package treemacs-magit
+  :after (treemacs magit))
+
+(use-package markdown-mode)
+
+(use-package gptel
+  :after markdown-mode)
+
+(use-package eglot-booster
+  :straight (eglot-booster
+             :type git
+             :host github
+             :repo "jdtsmith/eglot-booster")
+  :after eglot
+  :config (eglot-booster-mode))
+
+(use-package rust-mode)
+
+(use-package cargo-mode
+  :after rust-mode
+  :hook (rust-mode . cargo-minor-mode)
+  :custom (compilation-scroll-output t))
+
+(use-package go-mode)
+
+(use-package smithy-mode)
+
+(use-package treesit-auto
+  :custom
+  (treesit-auto-install 'prompt)
+  :config
+  (treesit-auto-add-to-auto-mode-alist 'all)
+  (global-treesit-auto-mode))
+
 
 
 ;;; init.el ends here
