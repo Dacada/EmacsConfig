@@ -98,9 +98,9 @@
   (indent-tabs-mode nil "Spaces!")
   (tab-width 4 "And if tabs, 4 spaces wide")
   (debug-on-quit nil "Set this to t to enter the debugger on C-g")
+  (fill-column 120 "line wrap after 120 columns")
   :custom-face
-  (default ((t (:font "Cascadia Code"))))  ;; Use Cascadia Code font by default
-  (fill-column 120 "line wrap after 120 columns"))
+  (default ((t (:font "Cascadia Code")))))  ;; Use Cascadia Code font by default
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
