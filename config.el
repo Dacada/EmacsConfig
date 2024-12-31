@@ -104,4 +104,7 @@
 ;; don't move the cursor when exiting insert mode
 (setq evil-move-cursor-back nil)
 
+;; enable my custom evil training mode from the start
+(add-hook 'doom-after-init-hook #'evil-training-mode)
+
 (load! "configz.el" nil t)

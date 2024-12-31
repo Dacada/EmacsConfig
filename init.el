@@ -190,4 +190,7 @@
 
        :config
        ;;literate
-       (default +bindings))
+       (default +bindings)
+
+       :custom
+       evil-training)
