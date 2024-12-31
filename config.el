@@ -101,4 +101,7 @@
           (lambda ()
             (c-set-style "llvm")))
 
+;; don't move the cursor when exiting insert mode
+(setq evil-move-cursor-back nil)
+
 (load! "configz.el" nil t)
